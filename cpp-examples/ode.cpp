@@ -124,7 +124,7 @@ int main() {
 
   // set up "grid" of t values to solve y(t)
   const double t0 = 0.0;
-  const double tmax = 2 * M_PI;
+  const double tmax = 4.0;
   const int n_steps = 100;
   const double dt = (tmax - t0) / (n_steps + 1);
   // store list of t's to solve for:

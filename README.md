@@ -103,3 +103,5 @@ Gamma_h = scipy.interpolate.CubicSpline(
 ```
 
 Gamma_h will now be a _function_ (of Q), that can be sent around and used in the rest of your code.
+
+Note: **exptrapolating** using interpolation functions is often a **VERY** bad idea - always check if this is reasonable for your problem
