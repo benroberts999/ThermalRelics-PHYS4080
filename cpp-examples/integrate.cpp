@@ -51,11 +51,12 @@ double function_gsl_form(double x, void *params) {
   // (this can be done in fewer steps, but I want to make it clearer)
   assert(params != nullptr);
   const auto array = static_cast<double *>(params);
-  const auto a = array[0];
-  const auto b = array[1];
-  return function(x, a, b);
+  const auto y = array[0];
+  const auto z = array[1];
+  return function(x, y, z);
 }
 
+// This is the exact (indefinite) integral [just to check result]
 double indef_integral(double x, double y, double z) {
   return std::exp(-y * x) * (-y * z * std::cos(x / z) + std::sin(x / z)) /
          (1.0 + y * y * z * z);
@@ -88,7 +89,7 @@ int main() {
   gsl_integration_workspace *gsl_int_wrk =
       gsl_integration_workspace_alloc(max_num_subintvls + 1);
 
-  // exact result integrated from [-2*pi, 2*pi] is Sinh[2*pi] =~267.745..
+  // Perform the integral
   double result{0.0};
   gsl_integration_qag(&f_gsl, a, b, abs_err, rel_err, max_num_subintvls,
                       GSL_INTEG_GAUSS15, gsl_int_wrk, &result, &abs_err);
@@ -97,6 +98,7 @@ int main() {
   gsl_integration_workspace_free(gsl_int_wrk);
 
   // expected result:
+  // exact result integrated from [-2*pi, 2*pi] is Sinh[2*pi] =~267.745..
   const auto expected = indef_integral(b, y, z) - indef_integral(a, y, z);
   const auto error = result - expected;
 

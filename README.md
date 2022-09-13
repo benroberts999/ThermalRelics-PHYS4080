@@ -27,7 +27,7 @@ GSL (GNU scientific libraries, for c and c++)
 $$
 \begin{align}
 G(x) &= \mu Y(x)\\
-\frac{dG(x)}{dx} &= \mu^2 Y_{eq}^2(x) - G^2(x)
+\frac{dG(x)}{dx} &=  \frac{m}{x^2} \langle\sigma v\rangle (\mu^2Y_{eq}^2(x) - G^2(x))
 \end{align}
 $$
 
