@@ -58,7 +58,7 @@ double function_gsl_form(double x, void *params) {
 
 // This is the exact (indefinite) integral [just to check result]
 double indef_integral(double x, double y, double z) {
-  return std::exp(-y * x) * (-y * z * std::cos(x / z) + std::sin(x / z)) /
+  return std::exp(-y * x) * z * (std::sin(x / z) - y * z * std::cos(x / z)) /
          (1.0 + y * y * z * z);
 }
 
@@ -72,8 +72,8 @@ int main() {
   double b = 2.0 * M_PI;
 
   // set the relativa and absolute error goals:
-  double abs_err = 1.0e-4;
-  double rel_err = 1.0e-4;
+  double abs_err = 1.0e-6;
+  double rel_err = 1.0e-6;
   // nb: in assignment, our function will end up having very small values, it
   // may be useful to set the 'absolute error' goal to zero, and use the
   // relative error
@@ -93,16 +93,18 @@ int main() {
   double result{0.0};
   gsl_integration_qag(&f_gsl, a, b, abs_err, rel_err, max_num_subintvls,
                       GSL_INTEG_GAUSS15, gsl_int_wrk, &result, &abs_err);
+  // 'result' now contains the result, and 'abs_err' now contains the estimate
+  // of the error
 
   // free workspace memory
   gsl_integration_workspace_free(gsl_int_wrk);
 
   // expected result:
-  // exact result integrated from [-2*pi, 2*pi] is Sinh[2*pi] =~267.745..
   const auto expected = indef_integral(b, y, z) - indef_integral(a, y, z);
   const auto error = result - expected;
 
-  std::cout << result << " " << expected << " " << error << "\n";
+  std::cout << result << " " << expected << " " << error << " " << abs_err
+            << "\n";
   // Notice the result is *much* more accurate than the accuracy we requested.
   // This is simply because this is an easy function to integrate. We won't be
   // so lucky in general

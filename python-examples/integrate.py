@@ -14,14 +14,15 @@ def integrand(x, y, z):
 
 # This is the exact (indefinite) integral
 def indef_integral(x,  y,  z):
-    return math.exp(-y * x) * (-y * z * math.cos(x / z) + math.sin(x / z)) / (1.0 + y * y * z * z)
+    return math.exp(-y * x) * z * (-y * z * math.cos(x / z)
+                                   + math.sin(x / z)) / (1.0 + y * y * z * z)
 
 
 # We integrate [-2pi, 2pi]
 a = -2*math.pi
 b = 2*math.pi
 
-# simple case: other parameters x=y=1
+# simple case: other parameters y=z=1
 y = 1.0
 z = 1.0
 
@@ -29,7 +30,7 @@ z = 1.0
 # Because our function will end up having very small values, it may be useful to set the 'absolute error' goal to zero, and use the relative error
 
 integral, error_estimate = scipy.integrate.quad(
-    integrand, a, b, args=(y, z), epsabs=1.0e-3, epsrel=1.0e-3)
+    integrand, a, b, args=(y, z), epsabs=1.0e-6, epsrel=1.0e-6)
 
 print(integral, error_estimate)
 
