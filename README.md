@@ -47,7 +47,7 @@ A typical starting point may be x~10. You will probably need to integrate out to
 
 ## Question 3
 
-You will find everything much easier if you code everything using natural units, and only convert back to "real" units for input/output. The only really tricky one is converting $\langle\sigma v\rangle$ from cm$^3$/s to GeV$^{-2}$ -- this was done in the lecture notes (be careful to go the right way!)
+You will find everything much easier if you code everything using natural units, and only convert back to "real" units for input/output. The only really tricky one is converting $\langle\sigma v\rangle$ from ${\rm cm}^3/{\rm s}$ to ${\rm GeV}^{-2}$ -- this was done in the lecture notes (be careful to go the right way!)
 
 To find the region in the $m_\chi$ vs. $\langle\sigma v\rangle$ plane where $\Omega\,h^2$ matches the Planck CMB analysis, you can use a root-finding method. One is provided in python's scipy library [docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.brentq](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.brentq.html)
 
@@ -72,13 +72,13 @@ We might, for example, want to loop through several masses, and optimise this fu
 To find the thermally-averaged cross-section, $\langle\sigma v\rangle_{\rm eff}$, you will have to integrate (average) over $s$.
 
 $$
-\langle\sigma v\rangle_{\rm eff} = \int_{4m^2}^\infty ..... \, v(s)\,{\rm d}s
+\langle\sigma v\rangle_{\rm eff} = \int_{4m^2}^\infty .....  v(s){\rm d}s
 $$
 
 For numerical reasons, it is often easier to do a change of variables, t=1/s, and instead integrate over t. Note that t=0 is likely not valid - it instead suffices to take this as a very small number [e.g., $1/(20\,m^2$)]
 
 $$
-\langle\sigma v\rangle_{\rm eff} = \int_{0}^{1/(4m^2)} ..... \, v(t)\frac{1}{t^2}\,{\rm d}t
+\langle\sigma v\rangle_{\rm eff} = \int_{0}^{1/(4m^2)} .....  v(t)\frac{1}{t^2}{\rm d}t
 $$
 
 Python's scipy library provides several functions for performing integrals. One that is often a good fit is `scipy.integrate.quad` [docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.quad](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.quad.html)
