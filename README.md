@@ -31,6 +31,12 @@ G(x) &= \mu Y(x)\\
 \end{align}
 $$
 
+where we chose
+
+$$
+\mu = \sqrt{\frac{\pi}{45}}M_{\rm Pl}\sqrt{g_*}.
+$$
+
 The equation to solve for Y might then look something like:
 
 ```python
