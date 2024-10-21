@@ -55,15 +55,18 @@ A typical starting point may be x~10. You will probably need to integrate out to
 
 You will find everything much easier if you code everything using natural units, and only convert back to "real" units for input/output. The only really tricky one is converting $\langle\sigma v\rangle$ from ${\rm cm}^3/{\rm s}$ to ${\rm GeV}^{-2}$ -- this was done in the lecture notes (be careful to go the right way!)
 
-To find the region in the $m_\chi$ vs. $\langle\sigma v\rangle$ plane where $\Omega\,h^2$ matches the Planck CMB analysis, you can use a root-finding method. One is provided in python's scipy library [docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.brentq](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.brentq.html)
+To find the region in the $m_\chi$ vs. $\langle\sigma v\rangle$ plane where $\Omega\,h^2$ matches the Planck CMB analysis, you can use a root-finding method. Several are provided in python's scipy library
 
-e.g.,
+* [scipy.optimize.brentq](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.brentq.html)
+* [scipy.optimize.fsolve.html](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.fsolve.html)
+
+Both should work, though fsolve seems to be easier to use. e.g.,
 
 ```python
-scipy.optimize.brentq(func, a, b)
+scipy.optimize.fsolve(func, a)
 ```
 
-will return x such that f(x)=0, where $a\leq x \leq b$.
+will return x such that f(x)=0, where $a$ is an initial guess at the root.
 
 In our case, we want function to be
 
@@ -71,7 +74,56 @@ $$
 \Omega_{\rm model}(m_\chi, \langle\sigma v\rangle) - \Omega_{\rm observed}
 $$
 
+For example, we would have a function that calculates the current abundance something like:
+
+```python
+def current_abundance(x_list, spin_j, mass, sv_x):
+    """Find current abundance: Solve dYdx, get Y at large x, convert to Oh^2"""
+    Y = solve_dYdx(x_list, spin_j, mass, sv_x)
+    Y_current = Y[-1]
+    return convert_to_Oh2(Y_current[0], mass)
+```
+
 We might, for example, want to loop through several masses, and optimise this function for $\langle\sigma v\rangle$ for each mass. Don't forget the take account of the 3-sigma Planck error bars!
+
+**Note** You must optimise the function for a _parameter_ (or variable), rather than a function. So, if you have a function that calculates the cross-section as a function of $x$, you need to optimise over the parameter of that function, i.e., the average value of $\langle\sigma v\rangle$.
+There are a number of ways to do this. The most "professional" way is to use lists of parameters (i.e., your $\langle\sigma v\rangle$ should be a function of $x$ _and_ the other parameters). In our case, the easiest way is to just define a new function inside the loop.
+You might have something like:
+
+```python
+    for mass in mass_list:
+
+        def func_to_optimise(sigmav0):
+            sigmav_const = lambda x: sigmav0
+            return current_abundance(x_list, spin, mass, sigmav_const) - Oh2_Planck
+
+        sigmav_fitted = scipy.optimize.fsolve(func, sigmav0_guess)[0]
+```
+
+Here, `sigmav0` is a parameter (i.e., a float) corresponding to the constant cross-section, and `sigmav_fitted` is the
+
+If you're not use to lambdas, they're just a simple way of defining inline functions. The `sigmav_const = lambda x: sigmav0` is equivilant to:
+
+```python
+    def sigmav_const(x):
+     return sigmav0
+```
+
+Final hint: you might find it better to work in the log space, since these functions vary over so many orders of magnitude.
+This makes it much easier for the root solver to solve the equation.
+You need to make only very minor changes to do this, for example
+
+```python
+    for mass in mass_list:
+
+        def func_to_optimise(log_sigmav0):
+            sigmav_const = lambda x: 10**log_sigmav0
+            return current_abundance(x_list, spin, mass, sigmav_const) - Oh2_Planck
+
+        sigmav_fitted = scipy.optimize.fsolve(func, np.log10(sigmav0_guess))[0]
+```
+
+The function we now optimise, func_to_optimise, is a function of the _log_ of the cross-section.
 
 ## Question 4
 
