@@ -120,7 +120,8 @@ You need to make only very minor changes to do this, for example
             sigmav_const = lambda x: 10**log_sigmav0
             return current_abundance(x_list, spin, mass, sigmav_const) - Oh2_Planck
 
-        sigmav_fitted = scipy.optimize.fsolve(func, np.log10(sigmav0_guess))[0]
+        log_sigmav_fitted = scipy.optimize.fsolve(func, np.log10(sigmav0_guess))[0]
+        sigmav_fitted = 10**log_sigmav_fitted
 ```
 
 The function we now optimise, func_to_optimise, is a function of the _log_ of the cross-section.
