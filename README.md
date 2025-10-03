@@ -10,7 +10,7 @@ scipy: libraries for Python:
 <https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.odeint.html>
 <https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html>
 <https://docs.scipy.org/doc/scipy/reference/tutorial/integrate.html>
-<https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.brentq.html>
+<https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.fsolve.html>
 <https://docs.scipy.org/doc/scipy/reference/interpolate.html>
 
 GSL (GNU scientific libraries, for c and c++)
